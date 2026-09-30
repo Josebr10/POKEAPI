@@ -1,0 +1,13 @@
+import requests
+from pprint import pprint
+
+
+link_api = "https://pokeapi.co/api/v2/"
+pokemon = input("Digite o nome do pokemon: ")
+
+
+resposta =  requests.get(f"{link_api}pokemon/{pokemon.lower()}")
+
+if resposta.status_code == 200:
+    dados_requisicao = resposta.json()
+    pprint(dados_requisicao)
