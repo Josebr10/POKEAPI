@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokemon API</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head> 
+<body>
+
+    <h1>Pokemon API</h1>
+
+
+    <form class="search-box" action="/buscar" method="GET">
+        <input type="text" placeholder="Pesquisar Pokemon..." name="q" required>
+        <button type="submit">Buscar</button>
+
+
+
+    </form>
+    <p>As Informações estão sendo resgatas da API do -->  <a class="btn btn-primary" href="https://pokeapi.co/">PokeAPi</a>
+    </p>
+
+    <div class="pokemon-card">
+        <h2>{{nome}}</h2>
+
+        <img src="{{imagem}}" alt="{{nome}}">
+        <p>Nome: {{nome}}</p>
+        <p>ID: {{id}}</p>
+        <p>Peso: {{peso}} Kg</p>
+        <p>Região: {{regiao}}</p>
+        <p>Tipo: {{tipos|join(', ')}}</p>
+
+    </div>
+
+    
+    <img src="https://i.pinimg.com/736x/cc/c6/86/ccc6862498ae6304e553cc46db9042fb.jpg" class="img-fluid" alt="...">
+
+
+    
+
+
+</body>
+</html>

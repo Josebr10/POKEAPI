@@ -1,0 +1,57 @@
+h1{
+color: yellow;
+text-align: center;
+-webkit-text-stroke: black 1px;
+
+}
+
+p{
+font-style: italic;
+
+}
+
+
+img{
+    height: 200px;
+    width: 200px;
+    border-radius: 100px;
+
+
+}
+
+.search-box{
+    display: flex;
+    align-items: center;
+    max-width: 400px;
+    border: 2px solid #ccc;
+    border-radius: 25px;
+    overflow: hidden;
+    padding: 5px;
+
+}
+
+.search-box input{
+    border: none;
+    outline: none;
+    padding: 10px 15px;
+    flex: 1;
+    font-size: 16px;
+
+}
+
+.search-box button {
+    background-color: orangered;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.3s;
+
+}
+
+.search-box button:hover{
+
+    background-color: rgb(173, 37, 9);
+}
+
