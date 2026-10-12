@@ -4,6 +4,17 @@ import requests
 
 app = Flask(__name__)
 
+LIDERES_GINASIO = {
+    "Brock": ["geodude", "onix"],
+    "Misty": ["staryu", "starmie"],
+    "Lt. Surge": ["voltorb", "pikachu", "raichu"],
+    "Erika": ["victreebel", "tangela", "vileplume"],
+    "Koga": ["koffing", "muk", "weezing"],
+    "Sabrina": ["kadabra", "mr-mime", "venomoth", "alakazam"],
+    "Blaine": ["growlithe", "ponyta", "rapidash", "arcanine"],
+    "Giovanni": ["rhyhorn", "dugtrio", "nidoqueen", "nidoking", "rhydon"],
+}
+
 
 @app.route("/")
 def index():
@@ -19,7 +30,7 @@ def buscar():
 
     resposta = requests.get(url)
     
-    dados =resposta.json()
+    dados = resposta.json() 
 
 
 
@@ -36,6 +47,7 @@ def buscar():
     regiao = encontros[0]["location_area"]["name"] if encontros else "Desconhecido"
     imagem = dados["sprites"]["front_default"]
     tipos = [t["type"]["name"] for t in dados["types"]]
+    lideres = [lider for lider, time in LIDERES_GINASIO.items() if nome in time]
 
 
     return render_template(
@@ -45,7 +57,8 @@ def buscar():
         peso=peso,
         regiao=regiao,
         imagem=imagem,
-        tipos=tipos
+        tipos=tipos,
+        lideres=lideres
     )
         
     
