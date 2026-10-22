@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, jsonify
 import requests
 
 
@@ -20,6 +20,26 @@ LIDERES_GINASIO = {
 def index():
 
     return (render_template("index.html"))
+
+nomes_pokemon = []
+
+
+@app.route("/sugestoes")
+def sugestoes():
+
+    global nomes_pokemon
+
+    if not nomes_pokemon:
+        resposta = requests.get("https://pokeapi.co/api/v2/pokemon?limit=2000")
+        nomes_pokemon = [p["name"] for p in resposta.json()["results"]]
+
+    texto = request.args.get("q", "").strip().lower()
+
+    if not texto:
+        return jsonify([])
+
+    return jsonify([n for n in nomes_pokemon if n.startswith(texto)][:8])
+
 
 @app.route("/buscar")
 def buscar():

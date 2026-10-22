@@ -21,10 +21,13 @@
 
     <main class="container-poke">
 
-        <form class="search-box" action="/buscar" method="GET">
-            <input type="text" placeholder="Pesquisar Pokemon (nome ou ID)..." name="q" required autocomplete="off">
-            <button type="submit">Buscar</button>
-        </form>
+        <div class="busca-wrap">
+            <form class="search-box" action="/buscar" method="GET">
+                <input type="text" placeholder="Pesquisar Pokemon (nome ou ID)..." name="q" required autocomplete="off">
+                <button type="submit">Buscar</button>
+            </form>
+            <ul id="sugestoes" class="sugestoes" hidden></ul>
+        </div>
 
         <p id="texto-da-api" class="fonte-api">As informações estão sendo resgatadas da API do <a href="https://pokeapi.co/" target="_blank" rel="noopener">PokéAPI</a></p>
 
@@ -60,9 +63,43 @@
             <p>Digite o nome ou o número de um Pokémon para começar!</p>
         </section>
         {% endif %}
-
-        <img src="https://i.pinimg.com/736x/cc/c6/86/ccc6862498ae6304e553cc46db9042fb.jpg" class="img-fluid banner" alt="Pokémon">
     </main>
+
+    <script>
+        const campo = document.querySelector('.search-box input');
+        const lista = document.getElementById('sugestoes');
+        let temporizador;
+
+        function fecharSugestoes() {
+            lista.hidden = true;
+            lista.innerHTML = '';
+        }
+
+        campo.addEventListener('input', () => {
+            clearTimeout(temporizador);
+            const texto = campo.value.trim();
+            if (!texto) { fecharSugestoes(); return; }
+
+            temporizador = setTimeout(async () => {
+                const resposta = await fetch('/sugestoes?q=' + encodeURIComponent(texto));
+                const nomes = await resposta.json();
+                lista.innerHTML = '';
+                nomes.forEach(nome => {
+                    const item = document.createElement('li');
+                    item.textContent = nome;
+                    item.addEventListener('mousedown', () => {
+                        campo.value = nome;
+                        fecharSugestoes();
+                        campo.form.submit();
+                    });
+                    lista.appendChild(item);
+                });
+                lista.hidden = nomes.length === 0;
+            }, 200);
+        });
+
+        campo.addEventListener('blur', fecharSugestoes);
+    </script>
 
 </body>
 </html>
