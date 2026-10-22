@@ -118,6 +118,23 @@ p{ color: #222; }
     transform: scale(1.06);
 }
 
+/* ---------- Busca por voz ---------- */
+.search-box .btn-voz{
+    background: transparent;
+    padding: 6px 10px;
+    margin-right: 4px;
+    font-size: 1.2rem;
+    line-height: 1;
+}
+.search-box .btn-voz:hover{ background: var(--poke-amarelo); }
+.search-box .btn-voz.ouvindo{
+    background: var(--poke-vermelho);
+    animation: pulsar 1s infinite;
+}
+@keyframes pulsar{
+    50%{ transform: scale(1.15); }
+}
+
 /* ---------- Autocomplete ---------- */
 .busca-wrap{ position: relative; width: 100%; }
 

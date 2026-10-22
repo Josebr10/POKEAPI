@@ -24,6 +24,7 @@
         <div class="busca-wrap">
             <form class="search-box" action="/buscar" method="GET">
                 <input type="text" placeholder="Pesquisar Pokemon (nome ou ID)..." name="q" required autocomplete="off">
+                <button type="button" id="btn-voz" class="btn-voz" title="Buscar por voz" aria-label="Buscar por voz" hidden>🎤</button>
                 <button type="submit">Buscar</button>
             </form>
             <ul id="sugestoes" class="sugestoes" hidden></ul>
@@ -127,6 +128,36 @@
                 campo.form.submit();
             }
         });
+
+        // Busca por voz (Web Speech API; botão só aparece se o navegador suportar)
+        const btnVoz = document.getElementById('btn-voz');
+        const Reconhecimento = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        if (Reconhecimento) {
+            btnVoz.hidden = false;
+            const reconhecimento = new Reconhecimento();
+            reconhecimento.lang = 'pt-BR';
+            reconhecimento.maxAlternatives = 1;
+
+            btnVoz.addEventListener('click', () => {
+                btnVoz.classList.add('ouvindo');
+                reconhecimento.start();
+            });
+
+            reconhecimento.addEventListener('result', (e) => {
+                const falado = e.results[0][0].transcript
+                    .toLowerCase()
+                    .replace(/[.,!?]/g, '')
+                    .trim()
+                    .replace(/\s+/g, '-');
+                campo.value = falado;
+                campo.focus();
+                campo.dispatchEvent(new Event('input'));
+            });
+
+            reconhecimento.addEventListener('end', () => btnVoz.classList.remove('ouvindo'));
+            reconhecimento.addEventListener('error', () => btnVoz.classList.remove('ouvindo'));
+        }
 
         // Atalhos globais: / foca a busca, ESC limpa, setas navegam entre Pokémon
         document.addEventListener('keydown', (e) => {
