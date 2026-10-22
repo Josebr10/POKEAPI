@@ -118,6 +118,17 @@ p{ color: #222; }
     transform: scale(1.06);
 }
 
+/* ---------- Erro (Psyduck) ---------- */
+.erro-poke{ text-align: center; margin: 20px 0; }
+.erro-poke img{ width: 200px; height: 200px; object-fit: contain; }
+.erro-poke h2{
+    font-family: 'Bangers', cursive;
+    letter-spacing: 1px;
+    color: var(--poke-vermelho);
+    margin-top: 10px;
+}
+.erro-poke p{ font-weight: 800; }
+
 /* ---------- Status da API ---------- */
 .status-api{
     display: flex;

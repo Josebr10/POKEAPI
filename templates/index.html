@@ -61,6 +61,17 @@
                 <p><strong>Líder de Ginásio:</strong> {{ lideres|join(', ') if lideres else 'Nenhum' }}</p>
             </div>
         </section>
+        {% elif erro %}
+        <section class="erro-poke">
+            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/54.png" alt="Psyduck confuso">
+            {% if erro == 'nao_encontrado' %}
+            <h2>Hã? Psyduck não conhece "{{ termo }}"!</h2>
+            <p>Esse Pokémon não existe na Pokédex. Confira o nome ou o número e tente de novo.</p>
+            {% else %}
+            <h2>Psyduck está com dor de cabeça!</h2>
+            <p>Não consegui falar com a PokéAPI agora. Tente novamente em instantes.</p>
+            {% endif %}
+        </section>
         {% else %}
         <section class="boas-vindas">
             <div class="pokebola-grande" aria-hidden="true"></div>

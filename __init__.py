@@ -65,9 +65,15 @@ def buscar():
 
     url = f"https://pokeapi.co/api/v2/pokemon/{pokemon}".lower()
 
-    resposta = requests.get(url)
-    
-    dados = resposta.json() 
+    try:
+        resposta = requests.get(url, timeout=10)
+    except requests.RequestException:
+        return render_template("index.html", erro="indisponivel", termo=pokemon)
+
+    if resposta.status_code == 404:
+        return render_template("index.html", erro="nao_encontrado", termo=pokemon)
+
+    dados = resposta.json()
 
 
 
