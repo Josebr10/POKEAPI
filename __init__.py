@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template, jsonify
 import requests
+import time
 
 
 app = Flask(__name__)
@@ -39,6 +40,22 @@ def sugestoes():
         return jsonify([])
 
     return jsonify([n for n in nomes_pokemon if n.startswith(texto)][:8])
+
+
+@app.route("/status")
+def status():
+
+    inicio = time.perf_counter()
+
+    try:
+        resposta = requests.get("https://pokeapi.co/api/v2/pokemon?limit=1", timeout=5)
+        online = resposta.status_code == 200
+    except requests.RequestException:
+        online = False
+
+    ms = round((time.perf_counter() - inicio) * 1000)
+
+    return jsonify({"online": online, "ms": ms})
 
 
 @app.route("/buscar")

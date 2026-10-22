@@ -66,6 +66,11 @@
         {% endif %}
     </main>
 
+    <footer class="status-api">
+        <span id="status-ponto" class="status-ponto" aria-hidden="true"></span>
+        <span id="status-texto">Verificando PokéAPI...</span>
+    </footer>
+
     <script>
         const campo = document.querySelector('.search-box input');
         const lista = document.getElementById('sugestoes');
@@ -158,6 +163,26 @@
             reconhecimento.addEventListener('end', () => btnVoz.classList.remove('ouvindo'));
             reconhecimento.addEventListener('error', () => btnVoz.classList.remove('ouvindo'));
         }
+
+        // Status da PokéAPI
+        const statusPonto = document.getElementById('status-ponto');
+        const statusTexto = document.getElementById('status-texto');
+
+        fetch('/status')
+            .then(r => r.json())
+            .then(s => {
+                if (s.online) {
+                    statusPonto.classList.add(s.ms < 800 ? 'online' : 'lenta');
+                    statusTexto.textContent = 'PokéAPI online · ' + s.ms + ' ms';
+                } else {
+                    statusPonto.classList.add('offline');
+                    statusTexto.textContent = 'PokéAPI fora do ar';
+                }
+            })
+            .catch(() => {
+                statusPonto.classList.add('offline');
+                statusTexto.textContent = 'Não foi possível verificar a PokéAPI';
+            });
 
         // Atalhos globais: / foca a busca, ESC limpa, setas navegam entre Pokémon
         document.addEventListener('keydown', (e) => {
