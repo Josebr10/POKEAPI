@@ -194,6 +194,40 @@ p{ color: #222; }
 .sugestoes li:hover,
 .sugestoes li.ativo{ background: var(--poke-amarelo); }
 
+/* ---------- Histórico ---------- */
+.historico{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    margin-top: 16px;
+    font-size: .9rem;
+}
+.historico[hidden]{ display: none; }
+.historico-titulo{ font-weight: 800; }
+.historico-itens{ display: contents; }
+.historico-chip{
+    padding: 3px 12px;
+    background: #fff;
+    border: 2px solid #222;
+    border-radius: 20px;
+    color: #222;
+    font-weight: 700;
+    text-decoration: none;
+    text-transform: capitalize;
+}
+.historico-chip:hover{ background: var(--poke-amarelo); color: #222; }
+.historico-limpar{
+    margin-left: auto;
+    background: transparent;
+    border: none;
+    color: var(--poke-azul);
+    font-weight: 700;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 /* ---------- Card ---------- */
 .pokemon-card{
     --cor: #a8a77a;

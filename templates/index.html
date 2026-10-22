@@ -30,10 +30,16 @@
             <ul id="sugestoes" class="sugestoes" hidden></ul>
         </div>
 
+        <div id="historico" class="historico" hidden>
+            <span class="historico-titulo">Recentes:</span>
+            <span id="historico-itens" class="historico-itens"></span>
+            <button type="button" id="historico-limpar" class="historico-limpar" title="Limpar histórico">Limpar</button>
+        </div>
+
         <p id="texto-da-api" class="fonte-api">As informações estão sendo resgatadas da API do <a href="https://pokeapi.co/" target="_blank" rel="noopener">PokéAPI</a></p>
 
         {% if nome %}
-        <section class="pokemon-card tipo-card-{{ tipos[0] if tipos else 'normal' }}" data-id="{{ id }}">
+        <section class="pokemon-card tipo-card-{{ tipos[0] if tipos else 'normal' }}" data-id="{{ id }}" data-nome="{{ nome }}">
             <div class="card-topo">
                 <h2>{{ nome }}</h2>
                 <span class="card-id">#{{ id }}</span>
@@ -197,6 +203,55 @@
                 statusPonto.classList.add('offline');
                 statusTexto.textContent = 'Não foi possível verificar a PokéAPI';
             });
+
+        // Histórico de buscas recentes (localStorage)
+        const CHAVE_HISTORICO = 'historicoPokemon';
+        const MAX_HISTORICO = 8;
+        const boxHistorico = document.getElementById('historico');
+        const itensHistorico = document.getElementById('historico-itens');
+
+        function lerHistorico() {
+            try {
+                const salvo = JSON.parse(localStorage.getItem(CHAVE_HISTORICO));
+                return Array.isArray(salvo) ? salvo : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function salvarHistorico(lista) {
+            try {
+                localStorage.setItem(CHAVE_HISTORICO, JSON.stringify(lista));
+            } catch (e) {}
+        }
+
+        function mostrarHistorico() {
+            const historico = lerHistorico();
+            itensHistorico.innerHTML = '';
+            historico.forEach(nome => {
+                const chip = document.createElement('a');
+                chip.className = 'historico-chip';
+                chip.href = '/buscar?q=' + encodeURIComponent(nome);
+                chip.textContent = nome;
+                itensHistorico.appendChild(chip);
+            });
+            boxHistorico.hidden = historico.length === 0;
+        }
+
+        const cardAtual = document.querySelector('.pokemon-card');
+        if (cardAtual) {
+            const nomeAtual = cardAtual.dataset.nome;
+            const historico = lerHistorico().filter(n => n !== nomeAtual);
+            historico.unshift(nomeAtual);
+            salvarHistorico(historico.slice(0, MAX_HISTORICO));
+        }
+
+        document.getElementById('historico-limpar').addEventListener('click', () => {
+            salvarHistorico([]);
+            mostrarHistorico();
+        });
+
+        mostrarHistorico();
 
         // Som (cry) do Pokémon
         const btnSom = document.querySelector('.btn-som');
