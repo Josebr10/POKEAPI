@@ -230,7 +230,24 @@ p{ color: #222; }
         var(--cor);
     display: flex;
     justify-content: center;
+    position: relative;
 }
+.btn-som{
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    background: #fff;
+    border: 3px solid #222;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    font-size: 1.2rem;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 3px 0 #222;
+    transition: background .2s, transform .15s;
+}
+.btn-som:hover{ background: var(--poke-amarelo); transform: scale(1.08); }
 .pokemon-card img{
     width: 200px;
     height: 200px;

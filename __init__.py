@@ -84,6 +84,7 @@ def buscar():
     regiao = encontros[0]["location_area"]["name"] if encontros else "Desconhecido"
     imagem = dados["sprites"]["front_default"]
     tipos = [t["type"]["name"] for t in dados["types"]]
+    som = dados.get("cries", {}).get("latest")
     lideres = [lider for lider, time in LIDERES_GINASIO.items() if nome in time]
 
 
@@ -94,6 +95,7 @@ def buscar():
         peso=peso,
         regiao=regiao,
         imagem=imagem,
+        som=som,
         tipos=tipos,
         lideres=lideres
     )

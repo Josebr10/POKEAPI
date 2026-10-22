@@ -41,6 +41,9 @@
 
             <div class="card-imagem">
                 <img src="{{ imagem }}" alt="{{ nome }}">
+                {% if som %}
+                <button type="button" class="btn-som" data-som="{{ som }}" title="Ouvir o som de {{ nome }}" aria-label="Ouvir o som de {{ nome }}">🔊</button>
+                {% endif %}
             </div>
 
             <div class="tipos">
@@ -183,6 +186,14 @@
                 statusPonto.classList.add('offline');
                 statusTexto.textContent = 'Não foi possível verificar a PokéAPI';
             });
+
+        // Som (cry) do Pokémon
+        const btnSom = document.querySelector('.btn-som');
+        if (btnSom) {
+            btnSom.addEventListener('click', () => {
+                new Audio(btnSom.dataset.som).play();
+            });
+        }
 
         // Atalhos globais: / foca a busca, ESC limpa, setas navegam entre Pokémon
         document.addEventListener('keydown', (e) => {
