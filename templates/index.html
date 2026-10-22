@@ -1,25 +1,6 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pokemon API</title>
+{% extends "base.html" %}
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-
-    <header class="topo">
-        <span class="pokebola-mini" aria-hidden="true"></span>
-        <h1>Pokémon API</h1>
-        <span class="pokebola-mini" aria-hidden="true"></span>
-    </header>
-
-    <main class="container-poke">
+{% block conteudo %}
 
         <div class="busca-wrap">
             <form class="search-box" action="/buscar" method="GET">
@@ -28,17 +9,6 @@
                 <button type="submit">Buscar</button>
             </form>
             <ul id="sugestoes" class="sugestoes" hidden></ul>
-        </div>
-
-        <div id="historico" class="historico" hidden>
-            <span class="historico-titulo">Recentes:</span>
-            <span id="historico-itens" class="historico-itens"></span>
-            <button type="button" id="historico-limpar" class="historico-limpar" title="Limpar histórico">Limpar</button>
-        </div>
-
-        <div id="favoritos" class="historico" hidden>
-            <span id="favoritos-titulo" class="historico-titulo"></span>
-            <span id="favoritos-itens" class="historico-itens"></span>
         </div>
 
         <p id="texto-da-api" class="fonte-api">As informações estão sendo resgatadas da API do <a href="https://pokeapi.co/" target="_blank" rel="noopener">PokéAPI</a></p>
@@ -90,13 +60,10 @@
             <p>Digite o nome ou o número de um Pokémon para começar!</p>
         </section>
         {% endif %}
-    </main>
 
-    <footer class="status-api">
-        <span id="status-ponto" class="status-ponto" aria-hidden="true"></span>
-        <span id="status-texto">Verificando PokéAPI...</span>
-    </footer>
+{% endblock %}
 
+{% block scripts %}
     <script>
         const campo = document.querySelector('.search-box input');
         const lista = document.getElementById('sugestoes');
@@ -190,135 +157,43 @@
             reconhecimento.addEventListener('error', () => btnVoz.classList.remove('ouvindo'));
         }
 
-        // Status da PokéAPI
-        const statusPonto = document.getElementById('status-ponto');
-        const statusTexto = document.getElementById('status-texto');
-
-        fetch('/status')
-            .then(r => r.json())
-            .then(s => {
-                if (s.online) {
-                    statusPonto.classList.add(s.ms < 800 ? 'online' : 'lenta');
-                    statusTexto.textContent = 'PokéAPI online · ' + s.ms + ' ms';
-                } else {
-                    statusPonto.classList.add('offline');
-                    statusTexto.textContent = 'PokéAPI fora do ar';
-                }
-            })
-            .catch(() => {
-                statusPonto.classList.add('offline');
-                statusTexto.textContent = 'Não foi possível verificar a PokéAPI';
-            });
-
-        // Histórico de buscas recentes (localStorage)
-        const CHAVE_HISTORICO = 'historicoPokemon';
+        // Histórico de buscas recentes (exibido em /recentes)
         const MAX_HISTORICO = 8;
-        const boxHistorico = document.getElementById('historico');
-        const itensHistorico = document.getElementById('historico-itens');
-
-        function lerHistorico() {
-            try {
-                const salvo = JSON.parse(localStorage.getItem(CHAVE_HISTORICO));
-                return Array.isArray(salvo) ? salvo : [];
-            } catch (e) {
-                return [];
-            }
-        }
-
-        function salvarHistorico(lista) {
-            try {
-                localStorage.setItem(CHAVE_HISTORICO, JSON.stringify(lista));
-            } catch (e) {}
-        }
-
-        function mostrarHistorico() {
-            const historico = lerHistorico();
-            itensHistorico.innerHTML = '';
-            historico.forEach(nome => {
-                const chip = document.createElement('a');
-                chip.className = 'historico-chip';
-                chip.href = '/buscar?q=' + encodeURIComponent(nome);
-                chip.textContent = nome;
-                itensHistorico.appendChild(chip);
-            });
-            boxHistorico.hidden = historico.length === 0;
-        }
-
         const cardAtual = document.querySelector('.pokemon-card');
+
         if (cardAtual) {
-            const nomeAtual = cardAtual.dataset.nome;
-            const historico = lerHistorico().filter(n => n !== nomeAtual);
-            historico.unshift(nomeAtual);
-            salvarHistorico(historico.slice(0, MAX_HISTORICO));
+            const atual = { nome: cardAtual.dataset.nome, id: Number(cardAtual.dataset.id) };
+            const historico = lerLista(CHAVE_HISTORICO).filter(p => p.nome !== atual.nome);
+            historico.unshift(atual);
+            salvarLista(CHAVE_HISTORICO, historico.slice(0, MAX_HISTORICO));
         }
 
-        document.getElementById('historico-limpar').addEventListener('click', () => {
-            salvarHistorico([]);
-            mostrarHistorico();
-        });
-
-        mostrarHistorico();
-
-        // Favoritos (localStorage)
-        const CHAVE_FAVORITOS = 'favoritosPokemon';
-        const boxFavoritos = document.getElementById('favoritos');
-        const itensFavoritos = document.getElementById('favoritos-itens');
+        // Favoritos (exibidos em /favoritos)
         const btnFav = document.getElementById('btn-fav');
-
-        function lerFavoritos() {
-            try {
-                const salvo = JSON.parse(localStorage.getItem(CHAVE_FAVORITOS));
-                return Array.isArray(salvo) ? salvo : [];
-            } catch (e) {
-                return [];
-            }
-        }
-
-        function salvarFavoritos(lista) {
-            try {
-                localStorage.setItem(CHAVE_FAVORITOS, JSON.stringify(lista));
-            } catch (e) {}
-        }
 
         function atualizarBotaoFav() {
             if (!btnFav) return;
-            const favorito = lerFavoritos().includes(cardAtual.dataset.nome);
+            const favorito = lerLista(CHAVE_FAVORITOS).some(p => p.nome === cardAtual.dataset.nome);
             btnFav.textContent = favorito ? '★' : '☆';
             btnFav.classList.toggle('ativo', favorito);
             btnFav.setAttribute('aria-pressed', favorito);
             btnFav.title = favorito ? 'Remover dos favoritos' : 'Favoritar';
         }
 
-        function mostrarFavoritos() {
-            const favoritos = lerFavoritos();
-            itensFavoritos.innerHTML = '';
-            favoritos.forEach(nome => {
-                const chip = document.createElement('a');
-                chip.className = 'historico-chip';
-                chip.href = '/buscar?q=' + encodeURIComponent(nome);
-                chip.textContent = nome;
-                itensFavoritos.appendChild(chip);
-            });
-            document.getElementById('favoritos-titulo').textContent =
-                'Meus Favoritos (' + favoritos.length + '):';
-            boxFavoritos.hidden = favoritos.length === 0;
-        }
-
         if (btnFav) {
             btnFav.addEventListener('click', () => {
                 const nome = cardAtual.dataset.nome;
-                const favoritos = lerFavoritos();
-                const indiceFav = favoritos.indexOf(nome);
-                if (indiceFav >= 0) favoritos.splice(indiceFav, 1);
-                else favoritos.push(nome);
-                salvarFavoritos(favoritos);
+                const favoritos = lerLista(CHAVE_FAVORITOS);
+                const posicao = favoritos.findIndex(p => p.nome === nome);
+                if (posicao >= 0) favoritos.splice(posicao, 1);
+                else favoritos.push({ nome: nome, id: Number(cardAtual.dataset.id) });
+                salvarLista(CHAVE_FAVORITOS, favoritos);
                 atualizarBotaoFav();
-                mostrarFavoritos();
+                atualizarContagemFavoritos();
             });
         }
 
         atualizarBotaoFav();
-        mostrarFavoritos();
 
         // Som (cry) do Pokémon
         const btnSom = document.querySelector('.btn-som');
@@ -351,6 +226,4 @@
             }
         });
     </script>
-
-</body>
-</html>
+{% endblock %}

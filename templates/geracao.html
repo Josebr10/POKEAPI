@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block titulo %}{{ atual.regiao }} · Geração {{ atual.numero }} · Pokemon API{% endblock %}
+{% block classe_container %}largo{% endblock %}
+
+{% block conteudo %}
+        <a href="/geracoes" class="voltar">← Todas as gerações</a>
+
+        <h2 class="pagina-titulo">{{ atual.regiao }} · Geração {{ atual.numero }}</h2>
+
+        <div class="geracao-navegacao">
+            {% if atual.numero > 1 %}
+            <a href="/geracoes/{{ atual.numero - 1 }}" class="btn-poke btn-poke-claro">← Gen {{ atual.numero - 1 }}</a>
+            {% endif %}
+            {% if atual.numero < geracoes|length %}
+            <a href="/geracoes/{{ atual.numero + 1 }}" class="btn-poke btn-poke-claro">Gen {{ atual.numero + 1 }} →</a>
+            {% endif %}
+        </div>
+
+        {% if pokemons is none %}
+        <section class="erro-poke">
+            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/54.png" alt="Psyduck confuso">
+            <h2>Psyduck está com dor de cabeça!</h2>
+            <p>Não consegui buscar essa geração na PokéAPI. Tente novamente em instantes.</p>
+        </section>
+        {% else %}
+        <p class="pagina-sub">{{ pokemons|length }} Pokémon</p>
+
+        <div class="poke-grade">
+            {% for p in pokemons %}
+            <a href="/buscar?q={{ p.id }}" class="poke-mini">
+                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{{ p.id }}.png" alt="{{ p.nome }}" loading="lazy">
+                <span class="poke-mini-numero">#{{ p.id }}</span>
+                <span>{{ p.nome }}</span>
+            </a>
+            {% endfor %}
+        </div>
+        {% endif %}
+{% endblock %}

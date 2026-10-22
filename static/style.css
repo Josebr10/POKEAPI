@@ -18,6 +18,7 @@ body{
 
 /* ---------- Topo ---------- */
 .topo{
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -194,39 +195,206 @@ p{ color: #222; }
 .sugestoes li:hover,
 .sugestoes li.ativo{ background: var(--poke-amarelo); }
 
-/* ---------- Histórico ---------- */
-.historico{
+/* ---------- Painel lateral ---------- */
+.layout{
     display: flex;
-    flex-wrap: wrap;
+    align-items: flex-start;
+}
+.painel{
+    width: 230px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    padding: 24px 16px;
+}
+.painel nav{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.painel-link{
+    display: flex;
     align-items: center;
-    gap: 8px;
-    width: 100%;
-    margin-top: 16px;
-    font-size: .9rem;
-}
-.historico[hidden]{ display: none; }
-.historico-titulo{ font-weight: 800; }
-.historico-itens{ display: contents; }
-.historico-chip{
-    padding: 3px 12px;
+    gap: 10px;
+    padding: 10px 14px;
     background: #fff;
-    border: 2px solid #222;
-    border-radius: 20px;
+    border: 3px solid #222;
+    border-radius: 14px;
+    box-shadow: 0 4px 0 #222;
     color: #222;
-    font-weight: 700;
+    font-weight: 800;
     text-decoration: none;
-    text-transform: capitalize;
+    transition: background .2s, transform .15s;
 }
-.historico-chip:hover{ background: var(--poke-amarelo); color: #222; }
-.historico-limpar{
+.painel-link:hover{ background: var(--poke-amarelo); color: #222; transform: translateX(3px); }
+.painel-link.ativo{ background: var(--poke-vermelho); color: #fff; }
+.painel-contagem{
     margin-left: auto;
-    background: transparent;
-    border: none;
-    color: var(--poke-azul);
-    font-weight: 700;
-    text-decoration: underline;
+    min-width: 24px;
+    padding: 0 7px;
+    background: var(--poke-amarelo);
+    border: 2px solid #222;
+    border-radius: 12px;
+    color: #222;
+    font-size: .8rem;
+    text-align: center;
+}
+.conteudo{
+    flex: 1;
+    min-width: 0;
+}
+.painel-toggle{
+    display: none;
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-60%);
+    width: 42px;
+    height: 42px;
+    background: #fff;
+    border: 3px solid #222;
+    border-radius: 10px;
+    font-size: 1.4rem;
+    line-height: 1;
     cursor: pointer;
 }
+
+@media (max-width: 768px){
+    .layout{ flex-direction: column; align-items: stretch; }
+    .painel{ display: none; width: auto; position: static; padding: 16px 16px 0; }
+    .painel.aberto{ display: block; }
+    .painel-toggle{ display: block; }
+}
+
+/* ---------- Páginas dedicadas ---------- */
+.container-poke.largo{ max-width: 860px; }
+
+.pagina-titulo{
+    font-family: 'Bangers', cursive;
+    font-size: 2.2rem;
+    letter-spacing: 2px;
+    color: var(--poke-azul);
+    text-align: center;
+    margin: 0;
+}
+.pagina-sub{
+    font-weight: 700;
+    text-align: center;
+    margin: 6px 0 20px;
+}
+.vazio{ text-align: center; margin: 30px 0; }
+.vazio p{ font-weight: 800; margin: 18px 0; }
+
+.btn-poke{
+    display: inline-block;
+    padding: 8px 22px;
+    background: var(--poke-vermelho);
+    border: 3px solid #222;
+    border-radius: 30px;
+    box-shadow: 0 4px 0 #222;
+    color: #fff;
+    font-family: 'Bangers', cursive;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background .2s, transform .15s;
+}
+.btn-poke:hover{ background: var(--poke-vermelho-escuro); color: #fff; transform: scale(1.05); }
+.btn-poke-claro{ background: #fff; color: #222; }
+.btn-poke-claro:hover{ background: var(--poke-amarelo); color: #222; }
+
+.voltar{
+    align-self: flex-start;
+    margin-bottom: 10px;
+    color: var(--poke-azul);
+    font-weight: 800;
+}
+
+/* ---------- Grade de miniaturas ---------- */
+.poke-grade{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 14px;
+    width: 100%;
+    margin-bottom: 24px;
+}
+.poke-item{ position: relative; }
+.poke-mini{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    height: 100%;
+    padding: 10px 6px;
+    background: #fff;
+    border: 3px solid #222;
+    border-radius: 14px;
+    box-shadow: 0 4px 0 #222;
+    color: #222;
+    font-size: .85rem;
+    font-weight: 800;
+    text-align: center;
+    text-decoration: none;
+    text-transform: capitalize;
+    transition: background .2s, transform .15s;
+}
+.poke-mini:hover{ background: var(--poke-amarelo); color: #222; transform: translateY(-3px); }
+.poke-mini img{ width: 84px; height: 84px; image-rendering: pixelated; }
+.poke-mini .pokebola-mini{ margin: 22px 0; animation: none; }
+.poke-mini-numero{ font-size: .7rem; opacity: .6; }
+.poke-remover{
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 26px;
+    height: 26px;
+    background: #fff;
+    border: 2px solid #222;
+    border-radius: 50%;
+    font-size: .8rem;
+    line-height: 1;
+    cursor: pointer;
+}
+.poke-remover:hover{ background: var(--poke-vermelho); color: #fff; }
+
+/* ---------- Lista de gerações ---------- */
+.geracoes-lista{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+    width: 100%;
+}
+.geracao-cartao{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 22px 10px;
+    background: linear-gradient(180deg, var(--poke-vermelho) 0 50%, #fff 50% 100%);
+    border: 4px solid #222;
+    border-radius: 16px;
+    box-shadow: 0 5px 0 #222;
+    color: #222;
+    text-decoration: none;
+    transition: transform .15s;
+}
+.geracao-cartao:hover{ transform: translateY(-4px) rotate(-1deg); color: #222; }
+.geracao-numero{
+    font-family: 'Bangers', cursive;
+    font-size: 1.6rem;
+    letter-spacing: 2px;
+    color: var(--poke-amarelo);
+    -webkit-text-stroke: 1px #222;
+    paint-order: stroke fill;
+}
+.geracao-regiao{ margin-top: 14px; font-size: 1.2rem; font-weight: 800; }
+.geracao-navegacao{
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 14px 0;
+}
+
 
 /* ---------- Card ---------- */
 .pokemon-card{

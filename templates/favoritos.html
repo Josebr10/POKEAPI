@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block titulo %}Favoritos · Pokemon API{% endblock %}
+{% block classe_container %}largo{% endblock %}
+
+{% block conteudo %}
+        <h2 class="pagina-titulo">⭐ Meus Favoritos <span id="favoritos-total"></span></h2>
+        <p class="pagina-sub">Os Pokémon que você marcou com a estrela neste navegador.</p>
+
+        <div id="favoritos-vazio" class="vazio" hidden>
+            <div class="pokebola-grande" aria-hidden="true"></div>
+            <p>Você ainda não favoritou nenhum Pokémon.</p>
+            <a href="/" class="btn-poke">Ir para a busca</a>
+        </div>
+
+        <div id="favoritos-grade" class="poke-grade" hidden></div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        const grade = document.getElementById('favoritos-grade');
+        const vazio = document.getElementById('favoritos-vazio');
+        const total = document.getElementById('favoritos-total');
+
+        function desenhar() {
+            const favoritos = lerLista(CHAVE_FAVORITOS);
+            grade.innerHTML = '';
+
+            favoritos.forEach(p => {
+                const item = document.createElement('div');
+                item.className = 'poke-item';
+                item.appendChild(criarMini(p));
+
+                const remover = document.createElement('button');
+                remover.type = 'button';
+                remover.className = 'poke-remover';
+                remover.textContent = '✕';
+                remover.title = 'Remover dos favoritos';
+                remover.setAttribute('aria-label', 'Remover ' + p.nome + ' dos favoritos');
+                remover.addEventListener('click', () => {
+                    salvarLista(CHAVE_FAVORITOS, lerLista(CHAVE_FAVORITOS).filter(f => f.nome !== p.nome));
+                    desenhar();
+                    atualizarContagemFavoritos();
+                });
+                item.appendChild(remover);
+
+                grade.appendChild(item);
+            });
+
+            total.textContent = favoritos.length ? '(' + favoritos.length + ')' : '';
+            grade.hidden = favoritos.length === 0;
+            vazio.hidden = favoritos.length > 0;
+        }
+
+        desenhar();
+    </script>
+{% endblock %}

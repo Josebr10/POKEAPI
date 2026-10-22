@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block titulo %}Gerações · Pokemon API{% endblock %}
+{% block classe_container %}largo{% endblock %}
+
+{% block conteudo %}
+        <h2 class="pagina-titulo">🌎 Gerações</h2>
+        <p class="pagina-sub">Escolha uma região para ver todos os Pokémon da geração.</p>
+
+        <div class="geracoes-lista">
+            {% for g in geracoes %}
+            <a href="/geracoes/{{ g.numero }}" class="geracao-cartao">
+                <span class="geracao-numero">Gen {{ g.numero }}</span>
+                <span class="geracao-regiao">{{ g.regiao }}</span>
+            </a>
+            {% endfor %}
+        </div>
+{% endblock %}

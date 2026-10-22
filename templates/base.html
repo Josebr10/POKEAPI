@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block titulo %}Pokemon API{% endblock %}</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <header class="topo">
+        <button type="button" id="painel-toggle" class="painel-toggle" aria-label="Abrir menu" aria-controls="painel">☰</button>
+        <span class="pokebola-mini" aria-hidden="true"></span>
+        <h1>Pokémon API</h1>
+        <span class="pokebola-mini" aria-hidden="true"></span>
+    </header>
+
+    <div class="layout">
+
+        <aside id="painel" class="painel">
+            <nav aria-label="Menu principal">
+                <a href="/" class="painel-link {{ 'ativo' if request.endpoint in ('index', 'buscar') }}">
+                    <span aria-hidden="true">🔍</span> Buscar
+                </a>
+                <a href="/geracoes" class="painel-link {{ 'ativo' if request.endpoint in ('geracoes', 'geracao') }}">
+                    <span aria-hidden="true">🌎</span> Gerações
+                </a>
+                <a href="/recentes" class="painel-link {{ 'ativo' if request.endpoint == 'recentes' }}">
+                    <span aria-hidden="true">🕘</span> Recentes
+                </a>
+                <a href="/favoritos" class="painel-link {{ 'ativo' if request.endpoint == 'favoritos' }}">
+                    <span aria-hidden="true">⭐</span> Favoritos
+                    <span id="contagem-favoritos" class="painel-contagem" hidden></span>
+                </a>
+            </nav>
+        </aside>
+
+        <div class="conteudo">
+            <main class="container-poke {% block classe_container %}{% endblock %}">
+                {% block conteudo %}{% endblock %}
+            </main>
+
+            <footer class="status-api">
+                <span id="status-ponto" class="status-ponto" aria-hidden="true"></span>
+                <span id="status-texto">Verificando PokéAPI...</span>
+            </footer>
+        </div>
+
+    </div>
+
+    <script src="{{ url_for('static', filename='storage.js') }}"></script>
+    <script>
+        // Painel lateral recolhível no celular
+        const painel = document.getElementById('painel');
+        document.getElementById('painel-toggle').addEventListener('click', () => {
+            painel.classList.toggle('aberto');
+        });
+
+        // Contagem de favoritos no painel
+        function atualizarContagemFavoritos() {
+            const contagem = document.getElementById('contagem-favoritos');
+            const total = lerLista(CHAVE_FAVORITOS).length;
+            contagem.textContent = total;
+            contagem.hidden = total === 0;
+        }
+        atualizarContagemFavoritos();
+
+        // Status da PokéAPI
+        const statusPonto = document.getElementById('status-ponto');
+        const statusTexto = document.getElementById('status-texto');
+
+        fetch('/status')
+            .then(r => r.json())
+            .then(s => {
+                if (s.online) {
+                    statusPonto.classList.add(s.ms < 800 ? 'online' : 'lenta');
+                    statusTexto.textContent = 'PokéAPI online · ' + s.ms + ' ms';
+                } else {
+                    statusPonto.classList.add('offline');
+                    statusTexto.textContent = 'PokéAPI fora do ar';
+                }
+            })
+            .catch(() => {
+                statusPonto.classList.add('offline');
+                statusTexto.textContent = 'Não foi possível verificar a PokéAPI';
+            });
+    </script>
+    {% block scripts %}{% endblock %}
+
+</body>
+</html>

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block titulo %}Recentes · Pokemon API{% endblock %}
+{% block classe_container %}largo{% endblock %}
+
+{% block conteudo %}
+        <h2 class="pagina-titulo">🕘 Buscas recentes</h2>
+        <p class="pagina-sub">Os últimos Pokémon que você pesquisou neste navegador.</p>
+
+        <div id="recentes-vazio" class="vazio" hidden>
+            <div class="pokebola-grande" aria-hidden="true"></div>
+            <p>Você ainda não pesquisou nenhum Pokémon.</p>
+            <a href="/" class="btn-poke">Ir para a busca</a>
+        </div>
+
+        <div id="recentes-grade" class="poke-grade" hidden></div>
+
+        <button type="button" id="recentes-limpar" class="btn-poke btn-poke-claro" hidden>Limpar histórico</button>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        const grade = document.getElementById('recentes-grade');
+        const vazio = document.getElementById('recentes-vazio');
+        const btnLimpar = document.getElementById('recentes-limpar');
+
+        function desenhar() {
+            const historico = lerLista(CHAVE_HISTORICO);
+            grade.innerHTML = '';
+            historico.forEach(p => grade.appendChild(criarMini(p)));
+
+            grade.hidden = historico.length === 0;
+            btnLimpar.hidden = historico.length === 0;
+            vazio.hidden = historico.length > 0;
+        }
+
+        btnLimpar.addEventListener('click', () => {
+            salvarLista(CHAVE_HISTORICO, []);
+            desenhar();
+        });
+
+        desenhar();
+    </script>
+{% endblock %}

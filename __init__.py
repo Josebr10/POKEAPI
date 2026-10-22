@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, render_template, jsonify, abort
 import requests
 import time
 
@@ -40,6 +40,71 @@ def sugestoes():
         return jsonify([])
 
     return jsonify([n for n in nomes_pokemon if n.startswith(texto)][:8])
+
+
+GERACOES = [
+    {"numero": 1, "regiao": "Kanto"},
+    {"numero": 2, "regiao": "Johto"},
+    {"numero": 3, "regiao": "Hoenn"},
+    {"numero": 4, "regiao": "Sinnoh"},
+    {"numero": 5, "regiao": "Unova"},
+    {"numero": 6, "regiao": "Kalos"},
+    {"numero": 7, "regiao": "Alola"},
+    {"numero": 8, "regiao": "Galar"},
+    {"numero": 9, "regiao": "Paldea"},
+]
+
+geracoes_cache = {}
+
+
+def obter_geracao(numero):
+
+    if numero not in geracoes_cache:
+        resposta = requests.get(f"https://pokeapi.co/api/v2/generation/{numero}", timeout=10)
+        resposta.raise_for_status()
+
+        especies = resposta.json()["pokemon_species"]
+        pokemons = [
+            {"id": int(e["url"].rstrip("/").split("/")[-1]), "nome": e["name"]}
+            for e in especies
+        ]
+        geracoes_cache[numero] = sorted(pokemons, key=lambda p: p["id"])
+
+    return geracoes_cache[numero]
+
+
+@app.route("/geracoes")
+def geracoes():
+
+    return render_template("geracoes.html", geracoes=GERACOES)
+
+
+@app.route("/geracoes/<int:numero>")
+def geracao(numero):
+
+    atual = next((g for g in GERACOES if g["numero"] == numero), None)
+
+    if atual is None:
+        abort(404)
+
+    try:
+        pokemons = obter_geracao(numero)
+    except requests.RequestException:
+        return render_template("geracao.html", geracoes=GERACOES, atual=atual, pokemons=None), 502
+
+    return render_template("geracao.html", geracoes=GERACOES, atual=atual, pokemons=pokemons)
+
+
+@app.route("/recentes")
+def recentes():
+
+    return render_template("recentes.html")
+
+
+@app.route("/favoritos")
+def favoritos():
+
+    return render_template("favoritos.html")
 
 
 @app.route("/status")
