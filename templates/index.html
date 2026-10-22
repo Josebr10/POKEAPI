@@ -36,6 +36,11 @@
             <button type="button" id="historico-limpar" class="historico-limpar" title="Limpar histórico">Limpar</button>
         </div>
 
+        <div id="favoritos" class="historico" hidden>
+            <span id="favoritos-titulo" class="historico-titulo"></span>
+            <span id="favoritos-itens" class="historico-itens"></span>
+        </div>
+
         <p id="texto-da-api" class="fonte-api">As informações estão sendo resgatadas da API do <a href="https://pokeapi.co/" target="_blank" rel="noopener">PokéAPI</a></p>
 
         {% if nome %}
@@ -47,6 +52,7 @@
 
             <div class="card-imagem">
                 <img src="{{ imagem }}" alt="{{ nome }}">
+                <button type="button" id="btn-fav" class="btn-fav" title="Favoritar" aria-label="Favoritar {{ nome }}" aria-pressed="false">☆</button>
                 {% if som %}
                 <button type="button" class="btn-som" data-som="{{ som }}" title="Ouvir o som de {{ nome }}" aria-label="Ouvir o som de {{ nome }}">🔊</button>
                 {% endif %}
@@ -252,6 +258,67 @@
         });
 
         mostrarHistorico();
+
+        // Favoritos (localStorage)
+        const CHAVE_FAVORITOS = 'favoritosPokemon';
+        const boxFavoritos = document.getElementById('favoritos');
+        const itensFavoritos = document.getElementById('favoritos-itens');
+        const btnFav = document.getElementById('btn-fav');
+
+        function lerFavoritos() {
+            try {
+                const salvo = JSON.parse(localStorage.getItem(CHAVE_FAVORITOS));
+                return Array.isArray(salvo) ? salvo : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function salvarFavoritos(lista) {
+            try {
+                localStorage.setItem(CHAVE_FAVORITOS, JSON.stringify(lista));
+            } catch (e) {}
+        }
+
+        function atualizarBotaoFav() {
+            if (!btnFav) return;
+            const favorito = lerFavoritos().includes(cardAtual.dataset.nome);
+            btnFav.textContent = favorito ? '★' : '☆';
+            btnFav.classList.toggle('ativo', favorito);
+            btnFav.setAttribute('aria-pressed', favorito);
+            btnFav.title = favorito ? 'Remover dos favoritos' : 'Favoritar';
+        }
+
+        function mostrarFavoritos() {
+            const favoritos = lerFavoritos();
+            itensFavoritos.innerHTML = '';
+            favoritos.forEach(nome => {
+                const chip = document.createElement('a');
+                chip.className = 'historico-chip';
+                chip.href = '/buscar?q=' + encodeURIComponent(nome);
+                chip.textContent = nome;
+                itensFavoritos.appendChild(chip);
+            });
+            document.getElementById('favoritos-titulo').textContent =
+                'Meus Favoritos (' + favoritos.length + '):';
+            boxFavoritos.hidden = favoritos.length === 0;
+        }
+
+        if (btnFav) {
+            btnFav.addEventListener('click', () => {
+                const nome = cardAtual.dataset.nome;
+                const favoritos = lerFavoritos();
+                const indiceFav = favoritos.indexOf(nome);
+                if (indiceFav >= 0) favoritos.splice(indiceFav, 1);
+                else favoritos.push(nome);
+                salvarFavoritos(favoritos);
+                atualizarBotaoFav();
+                mostrarFavoritos();
+            });
+        }
+
+        atualizarBotaoFav();
+        mostrarFavoritos();
 
         // Som (cry) do Pokémon
         const btnSom = document.querySelector('.btn-som');

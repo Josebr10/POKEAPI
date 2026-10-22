@@ -292,6 +292,24 @@ p{ color: #222; }
     box-shadow: 0 3px 0 #222;
     transition: background .2s, transform .15s;
 }
+.btn-fav{
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    background: #fff;
+    border: 3px solid #222;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    font-size: 1.4rem;
+    line-height: 1;
+    color: #222;
+    cursor: pointer;
+    box-shadow: 0 3px 0 #222;
+    transition: background .2s, transform .15s;
+}
+.btn-fav:hover{ transform: scale(1.08); }
+.btn-fav.ativo{ background: var(--poke-amarelo); color: #b3a125; }
 .btn-som:hover{ background: var(--poke-amarelo); transform: scale(1.08); }
 .pokemon-card img{
     width: 200px;
