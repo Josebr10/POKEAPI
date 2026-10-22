@@ -142,7 +142,8 @@ p{ color: #222; }
     font-weight: 700;
     text-transform: capitalize;
 }
-.sugestoes li:hover{ background: var(--poke-amarelo); }
+.sugestoes li:hover,
+.sugestoes li.ativo{ background: var(--poke-amarelo); }
 
 /* ---------- Card ---------- */
 .pokemon-card{

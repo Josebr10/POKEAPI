@@ -32,7 +32,7 @@
         <p id="texto-da-api" class="fonte-api">As informações estão sendo resgatadas da API do <a href="https://pokeapi.co/" target="_blank" rel="noopener">PokéAPI</a></p>
 
         {% if nome %}
-        <section class="pokemon-card tipo-card-{{ tipos[0] if tipos else 'normal' }}">
+        <section class="pokemon-card tipo-card-{{ tipos[0] if tipos else 'normal' }}" data-id="{{ id }}">
             <div class="card-topo">
                 <h2>{{ nome }}</h2>
                 <span class="card-id">#{{ id }}</span>
@@ -69,8 +69,10 @@
         const campo = document.querySelector('.search-box input');
         const lista = document.getElementById('sugestoes');
         let temporizador;
+        let indice = -1;
 
         function fecharSugestoes() {
+            indice = -1;
             lista.hidden = true;
             lista.innerHTML = '';
         }
@@ -84,6 +86,7 @@
                 const resposta = await fetch('/sugestoes?q=' + encodeURIComponent(texto));
                 const nomes = await resposta.json();
                 lista.innerHTML = '';
+                indice = -1;
                 nomes.forEach(nome => {
                     const item = document.createElement('li');
                     item.textContent = nome;
@@ -99,6 +102,54 @@
         });
 
         campo.addEventListener('blur', fecharSugestoes);
+
+        function destacar(novo) {
+            const itens = lista.querySelectorAll('li');
+            itens.forEach(i => i.classList.remove('ativo'));
+            indice = novo;
+            if (itens[indice]) itens[indice].classList.add('ativo');
+        }
+
+        campo.addEventListener('keydown', (e) => {
+            const itens = lista.querySelectorAll('li');
+            if (lista.hidden || itens.length === 0) return;
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                destacar((indice + 1) % itens.length);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                destacar((indice - 1 + itens.length) % itens.length);
+            } else if (e.key === 'Enter' && indice >= 0) {
+                e.preventDefault();
+                campo.value = itens[indice].textContent;
+                fecharSugestoes();
+                campo.form.submit();
+            }
+        });
+
+        // Atalhos globais: / foca a busca, ESC limpa, setas navegam entre Pokémon
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.altKey || e.metaKey) return;
+
+            if (e.key === 'Escape') {
+                campo.value = '';
+                fecharSugestoes();
+                return;
+            }
+
+            if (e.target.matches('input, textarea')) return;
+
+            if (e.key === '/') {
+                e.preventDefault();
+                campo.focus();
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                const card = document.querySelector('.pokemon-card');
+                if (!card) return;
+                const novoId = Number(card.dataset.id) + (e.key === 'ArrowRight' ? 1 : -1);
+                if (novoId >= 1) window.location.href = '/buscar?q=' + novoId;
+            }
+        });
     </script>
 
 </body>
