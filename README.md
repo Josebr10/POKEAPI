@@ -1,21 +1,27 @@
-# POKEAPI
+# 🐾 POKEAPI
 
-API de Pokémon desenvolvida em Flask para consultar informações de Pokémon e exibir detalhes como nome, peso, região, tipos e líderes de ginásio.
+<div align="center">
+  <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png" alt="Pikachu" width="140" />
+</div>
 
-## Descrição
+<p align="center">
+  <img alt="Python" src="https://img.shields.io/badge/Python-3.9%2B-3776AB?style=for-the-badge&logo=python&logoColor=white" />
+  <img alt="Flask" src="https://img.shields.io/badge/Flask-3.0-000000?style=for-the-badge&logo=flask&logoColor=white" />
+  <img alt="PokéAPI" src="https://img.shields.io/badge/Pok%C3%A9API-Data-FFCB05?style=for-the-badge&logo=githubactions&logoColor=black" />
+</div>
 
-Este projeto consome a API pública da PokéAPI para buscar dados de Pokémon a partir de uma pesquisa na interface web. A aplicação monta uma página simples com as informações do Pokémon consultado e também identifica se ele pertence a algum time de líder de ginásio.
+Uma aplicação web em Python usando Flask para consultar Pokémon via a PokéAPI e exibir informações em uma interface simples e amigável.
 
-## Funcionalidades
+## ✨ Funcionalidades
 
 - Busca de Pokémon por nome ou ID
-- Exibição de imagem oficial
-- Informações de peso, tipos e região de encontro
-- Consulta à PokéAPI em tempo real
+- Exibição de imagem oficial do Pokémon
+- Informações como peso, tipos e região de encontro
+- Consulta em tempo real à PokéAPI
 - Identificação de líderes de ginásio relacionados ao Pokémon
-- Interface web em HTML/CSS
+- Layout simples em HTML/CSS
 
-## Tecnologias
+## 🧩 Tecnologias
 
 - Python
 - Flask
@@ -23,7 +29,7 @@ Este projeto consome a API pública da PokéAPI para buscar dados de Pokémon a 
 - HTML
 - CSS
 
-## Estrutura do projeto
+## 📁 Estrutura do projeto
 
 ```text
 POKEAPI/
@@ -39,12 +45,14 @@ POKEAPI/
 └── __pycache__/
 ```
 
-## Pré-requisitos
+## 🚀 Pré-requisitos
 
-- Python 3.9+
+Antes de rodar o projeto, certifique-se de ter instalado:
+
+- Python 3.9 ou superior
 - pip
 
-## Instalação
+## 🛠️ Instalação
 
 1. Clone o repositório:
 
@@ -53,21 +61,29 @@ git clone https://github.com/Josebr10/POKEAPI.git
 cd POKEAPI
 ```
 
-2. Crie e ative um ambiente virtual:
+2. Crie um ambiente virtual:
 
 ```bash
 python -m venv venv
-source venv/bin/activate   # Linux/macOS
-venv\Scripts\activate      # Windows
 ```
 
-3. Instale as dependências:
+3. Ative o ambiente virtual:
+
+```bash
+# Linux/macOS
+source venv/bin/activate
+
+# Windows
+venv\Scripts\activate
+```
+
+4. Instale as dependências:
 
 ```bash
 pip install flask requests
 ```
 
-## Execução
+## ▶️ Como executar
 
 No diretório raiz do projeto, execute:
 
@@ -75,38 +91,48 @@ No diretório raiz do projeto, execute:
 python __init__.py
 ```
 
-A aplicação será iniciada em:
+Depois, abra no navegador:
 
 ```text
 http://127.0.0.1:5000/
 ```
 
-## Como usar
+## 🔎 Exemplo de uso
 
-Na página inicial, pesquise um Pokémon, por exemplo:
+Na página inicial, pesquise um Pokémon como:
 
 ```text
 pikachu
 ```
 
-A aplicação retorna dados como:
+Você verá informações como:
 
 - nome
 - ID
 - peso
-- imagem
 - tipos
+- imagem
 - região de encontro
 - líderes de ginásio relacionados
 
-## Licença
+## 🧠 Como funciona
 
-Este projeto está licenciado sob a licença MIT. Consulte o arquivo [LICENSE](LICENSE) para mais detalhes.
+A aplicação envia uma requisição para a PokéAPI com o nome ou ID do Pokémon informado. Em seguida, processa os dados retornados e os apresenta na página web usando Flask e templates HTML.
 
-## Autor
+## 📄 Licença
+
+Este projeto está sob a licença MIT. Consulte o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+## 👤 Autor
 
 - Josebr10
 
-## Observação
+## ⚠️ Observação
 
-Como a aplicação utiliza a PokéAPI pública, a disponibilidade do serviço externo pode afetar o funcionamento em certos momentos.
+Como o projeto depende da PokéAPI pública, a disponibilidade do serviço externo pode influenciar o funcionamento da aplicação em alguns momentos.
+
+---
+
+<p align="center">
+  <i>Feito com ❤️ para explorar o mundo Pokémon.</i>
+</p>
