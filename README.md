@@ -133,6 +133,3 @@ Como o projeto depende da PokéAPI pública, a disponibilidade do serviço exter
 
 ---
 
-<p align="center">
-  <i>Feito com ❤️ para explorar o mundo Pokémon.</i>
-</p>
